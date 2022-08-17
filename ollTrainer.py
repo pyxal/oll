@@ -1,34 +1,54 @@
 #!/bin/bash/python3
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# CFOP-OLL Trainer V2.0                                     #
-#                                                           #
-# All cases selected in recap mode by default               #
-# Arguments can be added to train the corresponding cases:  #
-#                                                           #
-#                                                           #
-# Arg                 Description                           #
-#                                                           #
-# train               switch to training mode               #
-# Sune                All edges oriented cases              #
-# T                   T-shape cases                         #
-# Squares             Square cases                          #
-# Corners             All Cornors oriented cases            #
-# Lightning           Lightning cases                       #
-# P                   P-shape cases                         #
-# C                   C-shape cases                         #
-# Fish                Fish-shape cases                      #
-# L                   L-shape cases                         #
-# W                   W-shape cases                         #
-# I                   I-shape cases                         #
-# Knights             Knight Move cases                     #
-# Awkward             Awkward-shape cases                   #
-# Dot                 Dot cases                             #
-#                                                           #
-#                                                           #
-# Idea and scrambles borrowed from bestsiteever.ru/oll      #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+hlp = """
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# CFOP-OLL Trainer V3.0                                         #
+# Made by Pyxal                                                 #
+#                                                               #
+# Recap: train cases one after another without reoccurrence     #
+# Training: train cases with random occurrence                  #
+#                                                               #
+# All cases selected in recap mode by default                   #
+# Arguments can be parsed to train the corresponding cases      #
+# in training mode:                                             #
+#                                                               #
+#    Arg                 Description                            #
+#                                                               #
+#    Sune                All edges oriented cases               #
+#    T                   T-shape cases                          #
+#    Squares             Square cases                           #
+#    Corners             All Cornors oriented cases             #
+#    Lightning           Lightning cases                        #
+#    P                   P-shape cases                          #
+#    C                   C-shape cases                          #
+#    Fish                Fish-shape cases                       #
+#    L                   L-shape cases                          #
+#    W                   W-shape cases                          #
+#    I                   I-shape cases                          #
+#    Knights             Knight Move cases                      #
+#    Awkward             Awkward-shape cases                    #
+#    Dot                 Dot cases                              #
+#    1 - 57              Specific case                          #
+#                                                               #
+#    Train               switch to training mode                #
+#                        with all cases                         #
+#                                                               #
+#    Gallery             show case gallery (not windows)        #
+#                        combineable with other args            #
+#                        to show corresponding cases            #
+#                                                               #
+#                                                               #
+# While training, the following inputs can be used:             #
+#                                                               #
+#    a, alg              show alg                               #
+#    c, case             show case (not windows)                #
+#    h, help             show this help message                 #
+#    e, exit             exit                                   #
+#                                                               #
+#                                                               #
+# Idea and scrambles borrowed from bestsiteever.ru/oll          #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+"""
 
 # imports
 from platform import machine
@@ -37,66 +57,85 @@ from sys import argv
 
 
 def main():
+    # help message
+    if len(argv) == 2:
+        if argv[1] == 'help':
+            print(hlp)
+            exit()
+
+
     print("\n\nOLL trainer\n\n")
 
+    mode = setMode()
+
     if mode == 'recap':
+        cases = caseSelection(mode, 'all')
         modes.recap(cases)
         modes.training(cases)
 
     elif mode == 'training':
+        cases = caseSelection(mode, argv[1])
         modes.training(cases)
 
     elif mode == 'gallery':
+        cases = caseSelection(mode, 'all') if len(argv) == 2 else caseSelection(mode, argv[2])
         modes.gallery(cases)
 
 
 # user input
 def userInput(case):
     while True:
-        userInput = input()
-        
-        if userInput == '': break
-        
-        elif userInput in ['a', 'alg', 'algorithm', 'solution', 'tell']:
-            print(ollCases[case][0])
+        try:
+            userInput = input()
+            if userInput == '': break
+            elif userInput in ['a', 'alg', 'algorithm', 'solution', 'tell']: print(ollCases[case][0])
+            elif userInput in ['c', 'case']: caseDraw.drawOllCase(ollCases[case][1])
+            elif userInput in ['h', 'help']: print(hlp)
+            elif userInput in ['e', 'exit', 'q', 'quit']: exit()
+            else: print("\nDidn't understand input\n(a)lg, (c)ase, (e)xit")
+        except KeyboardInterrupt: exit()
 
-        elif userInput in ['c', 'case']:
-            caseDraw.drawOllCase(ollCases[case][1])
-
-        elif userInput in ['e', 'exit', 'q', 'quit']:
-            print("\nexiting...")
-            exit()
-
-        else: print("\nDidn't understand input\n(a)lg, (c)ase, (e)xit")
 
 # case selection
-def caseSelection(arg):
+def caseSelection(mode, arg):
     caseObj = []
     
-    if len(argv) == 1:                                                      caseObj = ['All', scramble.randomize(ollScrambles)]
-    elif arg.lower() in ['sune', 'sunecases', 'edges', 'edgesoriented']:    caseObj = ['Sune', scramble.randomize(edgesOriented)]
-    elif arg.lower() in ['t', 'tcases', 'tcase']:                           caseObj = ['T-shape', scramble.randomize(tCases)]
-    elif arg.lower() in ['squares', 'square', 'squarecases']:               caseObj = ['Square', scramble.randomize(squareCases)]
-    elif arg.lower() in ['corners', 'corner', 'cornersoriented']:           caseObj = ['Oriented corner', scramble.randomize(cornersOriented)]
-    elif arg.lower() in ['lightning', 'lightningcases', 'lightningcase']:   caseObj = ['Lightning', scramble.randomize(lightningCases)]
-    elif arg.lower() in ['p', 'pcases', 'pcase']:                           caseObj = ['P-shape', scramble.randomize(pCases)]
-    elif arg.lower() in ['c', 'ccases', 'ccase']:                           caseObj = ['C-shape', scramble.randomize(cCases)]
-    elif arg.lower() in ['fish', 'fishcases', 'fishcase']:                  caseObj = ['Fish-shape', scramble.randomize(fishCases)]
-    elif arg.lower() in ['l', 'lcases', 'lcase']:                           caseObj = ['L-shape', scramble.randomize(lCases)]
-    elif arg.lower() in ['w', 'wcases', 'wcase']:                           caseObj = ['W-shape', scramble.randomize(wCases)]
-    elif arg.lower() in ['i', 'icases', 'icase']:                           caseObj = ['I-shape', scramble.randomize(iCases)]
-    elif arg.lower() in ['knight', 'knights', 'knightcases', 'knightcase']: caseObj = ['Knight Move', scramble.randomize(knightMoveCases)]
-    elif arg.lower() in ['awkward', 'awkwardcases', 'awkwardcase']:         caseObj = ['Awkward-shape', scramble.randomize(awkwardCases)]
-    elif arg.lower() in ['dot', 'dotcases', 'dotcase']:                     caseObj = ['Dot', scramble.randomize(dotCases)]
+    if len(argv) == 1:                                                      caseObj = ['All', scramble.randomize(mode, ollScrambles)]
+    elif arg.lower() in ['sune', 'sunecases', 'edges', 'edgesoriented']:    caseObj = ['Sune', scramble.randomize(mode, caseGroups['edgesOriented'])]
+    elif arg.lower() in ['t', 'tcases', 'tcase']:                           caseObj = ['T-shape', scramble.randomize(mode, caseGroups['tCases'])]
+    elif arg.lower() in ['squares', 'square', 'squarecases']:               caseObj = ['Square', scramble.randomize(mode, caseGroups['squareCases'])]
+    elif arg.lower() in ['corners', 'corner', 'cornersoriented']:           caseObj = ['Oriented corner', scramble.randomize(mode, caseGroups['cornersOriented'])]
+    elif arg.lower() in ['lightning', 'lightningcases', 'lightningcase']:   caseObj = ['Lightning', scramble.randomize(mode, caseGroups['lightningCases'])]
+    elif arg.lower() in ['p', 'pcases', 'pcase']:                           caseObj = ['P-shape', scramble.randomize(mode, caseGroups['pCases'])]
+    elif arg.lower() in ['c', 'ccases', 'ccase']:                           caseObj = ['C-shape', scramble.randomize(mode, caseGroups['cCases'])]
+    elif arg.lower() in ['fish', 'fishcases', 'fishcase']:                  caseObj = ['Fish-shape', scramble.randomize(mode, caseGroups['fishCases'])]
+    elif arg.lower() in ['l', 'lcases', 'lcase']:                           caseObj = ['L-shape', scramble.randomize(mode, caseGroups['lCases'])]
+    elif arg.lower() in ['w', 'wcases', 'wcase']:                           caseObj = ['W-shape', scramble.randomize(mode, caseGroups['wCases'])]
+    elif arg.lower() in ['i', 'icases', 'icase']:                           caseObj = ['I-shape', scramble.randomize(mode, caseGroups['iCases'])]
+    elif arg.lower() in ['knight', 'knights', 'knightcases', 'knightcase']: caseObj = ['Knight Move', scramble.randomize(mode, caseGroups['knightMoveCases'])]
+    elif arg.lower() in ['awkward', 'awkwardcases', 'awkwardcase']:         caseObj = ['Awkward-shape', scramble.randomize(mode, caseGroups['awkwardCases'])]
+    elif arg.lower() in ['dot', 'dotcases', 'dotcase']:                     caseObj = ['Dot', scramble.randomize(mode, caseGroups['dotCases'])]
     
     else:
         try:
-            if isinstance(int(arg), int) and int(arg) in range(1, 58):      caseObj = ['Specific', scramble.randomize([ollScrambles[int(arg)-1]])]
-            else:                                                           caseObj = ['All', scramble.randomize(ollScrambles)]
-        except ValueError:                                                  caseObj = ['All', scramble.randomize(ollScrambles)]
+            if isinstance(int(arg), int) and int(arg) in range(1, 58):      caseObj = ['Specific', scramble.randomize(mode, [ollScrambles[int(arg)-1]])]
+            else:                                                           caseObj = ['All', scramble.randomize(mode, ollScrambles)]
+        except ValueError:                                                  caseObj = ['All', scramble.randomize(mode, ollScrambles)]
 
 
     return caseObj
+
+
+# set mode
+def setMode():
+    
+    mode = ''
+    
+    if len(argv) == 1: mode = 'recap'                                           # recap mode
+    elif argv[1].lower() in ['gallery', 'gal', 'cases']: mode = 'gallery'       # gallery mode
+    elif argv[1].lower() not in ['gallery', 'gal', 'cases']: mode = 'training'  # training mode
+    
+    return mode
 
 
 
@@ -147,7 +186,7 @@ class modes:
 class scramble:
 
     # randomize order
-    def randomize(algs):
+    def randomize(mode, algs):
         algSet = []
         for alg in algs: algSet.append(alg[0])
         if mode != 'gallery': return sample(algSet, len(algSet))
@@ -209,6 +248,7 @@ class caseDraw:
         return sp+b+tile1+b+tile2+b+tile3+b+w+sp
 
 
+
 # colors
 b = caseDraw.block(0, 0, 0, chr(0x2588))*2
 g = caseDraw.block(64, 64, 64, chr(0x2588))*2
@@ -223,27 +263,30 @@ ygr = y+g+g+g
 sp = ' '*4
 line = sp+b*16
 
-ggg = caseDraw.translate(gb, gb, gb)
-yyy = caseDraw.translate(yb, yb, yb)
-ggy = caseDraw.translate(gb, gb, yb)
-ygg = caseDraw.translate(yb, gb, gb)
-yyg = caseDraw.translate(yb, yb, gb)
-gyy = caseDraw.translate(gb, yb, yb)
-gyg = caseDraw.translate(gb, yb, gb)
-ygy = caseDraw.translate(yb, gb, yb)
-yygy = caseDraw.translate(yb, yb, gry)
-ygyy = caseDraw.translate(ygr, yb, yb)
-yggg = caseDraw.translate(ygr, gb, gb)
-gggy = caseDraw.translate(gb, gb, gry)
-gygy = caseDraw.translate(gb, yb, gry)
-ygyg = caseDraw.translate(ygr, yb, gb)
-yggy = caseDraw.translate(ygr, gb, yb)
-ygygy = caseDraw.translate(ygr, yb, gry)
-ygggy = caseDraw.translate(ygr, gb, gry)
-yggry = caseDraw.translate(yb, gb, gry)
-gygry = caseDraw.translate(gb, yb, gry)
-ygrgy = caseDraw.translate(ygr, gb, yb)
-ygryg = caseDraw.translate(ygr, yb, gb)
+# case draw codes
+caseDrawCodes = {
+    'ggg' : caseDraw.translate(gb, gb, gb),
+    'yyy' : caseDraw.translate(yb, yb, yb),
+    'ggy' : caseDraw.translate(gb, gb, yb),
+    'ygg' : caseDraw.translate(yb, gb, gb),
+    'yyg' : caseDraw.translate(yb, yb, gb),
+    'gyy' : caseDraw.translate(gb, yb, yb),
+    'gyg' : caseDraw.translate(gb, yb, gb),
+    'ygy' : caseDraw.translate(yb, gb, yb),
+    'yygy' : caseDraw.translate(yb, yb, gry),
+    'ygyy' : caseDraw.translate(ygr, yb, yb),
+    'yggg' : caseDraw.translate(ygr, gb, gb),
+    'gggy' : caseDraw.translate(gb, gb, gry),
+    'gygy' : caseDraw.translate(gb, yb, gry),
+    'ygyg' : caseDraw.translate(ygr, yb, gb),
+    'yggy' : caseDraw.translate(ygr, gb, yb),
+    'ygygy' : caseDraw.translate(ygr, yb, gry),
+    'ygggy' : caseDraw.translate(ygr, gb, gry),
+    'yggry' : caseDraw.translate(yb, gb, gry),
+    'gygry' : caseDraw.translate(gb, yb, gry),
+    'ygrgy' : caseDraw.translate(ygr, gb, yb),
+    'ygryg' : caseDraw.translate(ygr, yb, gb)
+}
 
 # oll cases
 ollCases = [
@@ -252,743 +295,801 @@ ollCases = [
     [
         "(R U2') (R2' F R F') U2' (R' F R F')",
         ['\n', line,
-        ygygy +                     "OLL 1",
-        ygggy +                     "Blank",
-        ygggy, ygggy, line, ygygy + "(R U2') (R2' F R F') U2' (R' F R F')",
-        ygygy, ygygy +              "(R U2' R') (Sledge) U2' (Sledge)",
-        ygygy, line, ygggy +        "",
-        ygggy, ygggy +              "",
-        ygygy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 1",
+        caseDrawCodes['ygggy'] +                                    "Blank",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'], line,       
+        caseDrawCodes['ygygy'] +                                    "(R U2') (R2' F R F') U2' (R' F R F')",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "(R U2' R') (Sledge) U2' (Sledge)",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['ygggy'] +      "",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'] +            "",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 2
     [
         "F (R U R' U') F' f (R U R' U') f'",
         ['\n', line,
-        ygyy +                      "OLL 2",
-        yggg +                      "Zamboni",
-        yggg, yggg, line, ygygy +   "F (R U R' U') F' f (R U R' U') f'",
-        ygygy, ygygy +              "F (Sexy) S (Sexy) f'",
-        ygygy, line, yggg +         "y (r U r') U2 R U2' R' U2 (r U' r')",
-        yggg, yggg +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 2",
+        caseDrawCodes['yggg'] +                                     "Zamboni",
+        caseDrawCodes['yggg'], caseDrawCodes['yggg'], line,         
+        caseDrawCodes['ygygy'] +                                    "F (R U R' U') F' f (R U R' U') f'",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "F (Sexy) S (Sexy) f'",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['yggg'] +       "y (r U r') U2 R U2' R' U2 (r U' r')",
+        caseDrawCodes['yggg'], caseDrawCodes['yggg'] +              "",                   
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 3
     [
         "f (R U R' U') f' U' F (R U R' U') F'",
         ['\n', line,
-        yygy +                      "OLL 3",
-        gggy +                      "Anti-Nazi",
-        gggy, gggy, line, ygygy +   "f (R U R' U') f' U' F (R U R' U') F'",
-        ygygy, ygygy +              "f (sexy) f' U' (T)",
-        ygygy, line, yggy +         "",
-        yggy, yggy +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 3",
+        caseDrawCodes['gggy'] +                                     "Anti-Nazi",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'], line,         
+        caseDrawCodes['ygygy'] +                                    "f (R U R' U') f' U' F (R U R' U') F'",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "f (sexy) f' U' (T)",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['yggy'] +       "",
+        caseDrawCodes['yggy'], caseDrawCodes['yggy'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 4
     [
         "f (R U R' U') f' U F (R U R' U') F'",
         ['\n', line,
-        ygyy +                      "OLL 4",
-        yggy +                      "Nazi",
-        yggy, yggy, line, ygygy +   "f (R U R' U') f' U F (R U R' U') F'",
-        ygygy, ygygy +              "f (Sexy) f' U (T)",
-        ygygy, line, gggy +         "",
-        gggy, gggy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 4",
+        caseDrawCodes['yggy'] +                                     "Nazi",
+        caseDrawCodes['yggy'], caseDrawCodes['yggy'], line,         
+        caseDrawCodes['ygygy'] +                                    "f (R U R' U') f' U F (R U R' U') F'",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "f (Sexy) f' U (T)",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['gggy'] +       "",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'] +              "",
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 5
     [
         "r' U2' R U R' U r",
         ['\n', line,
-        yygy +                      "OLL 5",
-        gggy +                      "Lefty-Square",
-        gggy, gggy, line, ygyy +    "r' U2' R U R' U r",
-        ygyy, ygyy +                "Mirror of Righty-Square",
-        ygyy, line, ygyy +          "",
-        ygyy, ygyy +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 5",
+        caseDrawCodes['gggy'] +                                     "Lefty-Square",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'], line,         
+        caseDrawCodes['ygyy'] +                                     "r' U2' R U R' U r",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "Mirror of Righty-Square",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['ygyy'] +        "",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 6
     [
         "r U2 R' U' R U' r'",
         ['\n', line,
-        ygyy +                      "OLL 6",
-        ygyy +                      "Righty-Square",
-        ygyy, ygyy, line, ygyy +    "r U2 R' U' R U' r'",
-        ygyy, ygyy +                "Wide Anti-Sune",
-        ygyy, line, gggy +          "",
-        gggy, gggy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 6",
+        caseDrawCodes['ygyy'] +                                     "Righty-Square",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'], line,         
+        caseDrawCodes['ygyy'] +                                     "r U2 R' U' R U' r'",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "Wide Anti-Sune",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['gggy'] +        "",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'] +              "",
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 7
     [
         "r U R' U R U2' r'",
         ['\n', line,
-        yygy +                      "OLL 7",
-        gygy +                      "Lightning",
-        gygy, gygy, line, yygy +    "r U R' U R U2' r'",
-        yygy, yygy +                "Wide Sune",
-        yygy, line, ygg +           "",
-        ygg, ygg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 7",
+        caseDrawCodes['gygy'] +                                     "Lightning",
+        caseDrawCodes['gygy'], caseDrawCodes['gygy'], line,         
+        caseDrawCodes['yygy'] +                                     "r U R' U R U2' r'",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Wide Sune",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ygg'] +         "",
+        caseDrawCodes['ygg'], caseDrawCodes['ygg'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 8
     [
         "r' U' R U' R' U2 r",
         ['\n', line,
-        yyy +                       "OLL 8",
-        ygg +                       "Reverse Lightning",
-        ygg, ygg, line, yygy +      "r' U' R U' R' U2 r",
-        yygy, yygy +                "Mirror of Lightning",
-        yygy, line, gygy +          "y2 l' U' L U' L' U2 l",
-        gygy, gygy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 8",
+        caseDrawCodes['ygg'] +                                      "Reverse Lightning",
+        caseDrawCodes['ygg'], caseDrawCodes['ygg'], line,           
+        caseDrawCodes['yygy'] +                                     "r' U' R U' R' U2 r",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Mirror of Lightning",
+        caseDrawCodes['yygy'], line, caseDrawCodes['gygy'] +        "y2 l' U' L U' L' U2 l",
+        caseDrawCodes['gygy'], caseDrawCodes['gygy'] +              "",                   
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 9
     [
         "(R U R' U') R' F (R2 U R' U') F'",
         ['\n', line,
-        ygyy +                      "OLL 9",
-        ygyg +                      "Kite",
-        ygyg, ygyg, line, yygy +    "(R U R' U') R' F (R2 U R' U') F'",
-        yygy, yygy +                "Starts as a T-perm",
-        yygy, line, ggy +           "",
-        ggy, ggy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 9",
+        caseDrawCodes['ygyg'] +                                     "Kite",
+        caseDrawCodes['ygyg'], caseDrawCodes['ygyg'], line,         
+        caseDrawCodes['yygy'] +                                     "(R U R' U') R' F (R2 U R' U') F'",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Starts as a T-perm",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ggy'] +         "",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 10
     [
         "(R U R' U) (R' F R F') (R U2' R')",
         ['\n', line,
-        yyy +                       "OLL 10",
-        ggy +                       "Anit-Kite",
-        ggy, ggy, line, yygy +      "(R U R' U) (R' F R F') (R U2' R')",
-        yygy, yygy +                "(Su)(sledge)(ne)",
-        yygy, line, ygyg +          "",
-        ygyg, ygyg +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 10",
+        caseDrawCodes['ggy'] +                                      "Anit-Kite",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'], line,           
+        caseDrawCodes['yygy'] +                                     "(R U R' U) (R' F R F') (R U2' R')",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "(Su)(sledge)(ne)",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ygyg'] +        "",
+        caseDrawCodes['ygyg'], caseDrawCodes['ygyg'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 11
     [
         "r' (R2 U R' U R U2 R') U M'",
         ['\n', line,
-        yygy +                      "OLL 11",
-        gggy +                      "Downstairs",
-        gggy, gggy, line, ygyy +    "r' (R2 U R' U R U2 R') U M'",
-        ygyy, ygyy +                "M (Sune) U M'",
-        ygyy, line, yyg +           "",
-        yyg, yyg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 11",
+        caseDrawCodes['gggy'] +                                     "Downstairs",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'], line,         
+        caseDrawCodes['ygyy'] +                                     "r' (R2 U R' U R U2 R') U M'",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "M (Sune) U M'",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['yyg'] +         "",
+        caseDrawCodes['yyg'], caseDrawCodes['yyg'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 12
     [
         "M' (R' U' R U' R' U2 R) U' M",
         ['\n', line,
-        yyy +                       "OLL 12",
-        yyg +                       "Upstairs",
-        yyg, yyg, line, ygyy +      "M' (R' U' R U' R' U2 R) U' M",
-        ygyy, ygyy +                "M' (Sune-mirror) U' M",
-        ygyy, line, gggy +          "",
-        gggy, gggy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 12",
+        caseDrawCodes['yyg'] +                                      "Upstairs",
+        caseDrawCodes['yyg'], caseDrawCodes['yyg'], line,           
+        caseDrawCodes['ygyy'] +                                     "M' (R' U' R U' R' U2 R) U' M",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "M' (Sune-mirror) U' M",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['gggy'] +        "",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'] +              "",
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 13
     [
         "(r U' r' U') (r U r') (F’ U F)",
         ['\n', line,
-        yygy +                     "OLL 13",
-        gggy +                     "Gun",
-        gggy, gggy, line, yyy +     "(r U' r' U') (r U r') (F’ U F)",
-        yyy, yyy +                  "",
-        yyy, line, ygg +            "F U R U' R2' F' R U (R U' R')",
-        ygg, ygg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 13",
+        caseDrawCodes['gggy'] +                                     "Gun",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'], line,         
+        caseDrawCodes['yyy'] +                                      "(r U' r' U') (r U r') (F’ U F)",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygg'] +          "F U R U' R2' F' R U (R U' R')",
+        caseDrawCodes['ygg'], caseDrawCodes['ygg'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 14
     [
         "(r' U r U) (r' U' r) y (R U' R')",
         ['\n', line,
-        ygyy +                     "OLL 14",
-        yggg +                     "Anti-Gun",
-        yggg, yggg, line, yyy +     "(r' U r U) (r' U' r) y (R U' R')",
-        yyy, yyy +                  "",
-        yyy, line, ggy +            "(R' F R) (U R' F' R) (F U' F')",
-        ggy, ggy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 14",
+        caseDrawCodes['yggg'] +                                     "Anti-Gun",
+        caseDrawCodes['yggg'], caseDrawCodes['yggg'], line,         
+        caseDrawCodes['yyy'] +                                      "(r' U r U) (r' U' r) y (R U' R')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ggy'] +          "(R' F R) (U R' F' R) (F U' F')",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 15
     [
         "(r' U' r) (R' U' R U) (r' U r)",
         ['\n', line,
-        yygy +                      "OLL 15",
-        gggy +                      "Squeegee",
-        gggy, gggy, line, yyy +     "(r' U' r) (R' U' R U) (r' U r)",
-        yyy, yyy +                  "",
-        yyy, line, yggy +           "y2 l' U' l (L' U' L U) l' U l",
-        yggy, yggy +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 15",
+        caseDrawCodes['gggy'] +                                     "Squeegee",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'], line,         
+        caseDrawCodes['yyy'] +                                      "(r' U' r) (R' U' R U) (r' U r)",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "",
+        caseDrawCodes['yyy'], line, caseDrawCodes['yggy'] +         "y2 l' U' l (L' U' L U) l' U l",
+        caseDrawCodes['yggy'], caseDrawCodes['yggy'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 16
     [
         "(r U r') (R U R' U') (r U' r')",
         ['\n', line,
-        ygyy +                      "OLL 16",
-        yggy +                      "Anti-Squeegee",
-        yggy, yggy, line, yyy +     "(r U r') (R U R' U') (r U' r')",
-        yyy, yyy +                  "r U r' (Sexy) r U' r'",
-        yyy, line, gggy +           "",
-        gggy, gggy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 16",
+        caseDrawCodes['yggy'] +                                     "Anti-Squeegee",
+        caseDrawCodes['yggy'], caseDrawCodes['yggy'], line,         
+        caseDrawCodes['yyy'] +                                      "(r U r') (R U R' U') (r U' r')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "r U r' (Sexy) r U' r'",
+        caseDrawCodes['yyy'], line, caseDrawCodes['gggy'] +         "",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'] +              "",
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 17
     [
         "(R U R' U) (R' F R F') U2' (R' F R F')",
         ['\n', line,
-        yyy +                       "OLL 17",
-        ygg +                       "Slash",
-        ygg, ygg, line, ygygy +     "(R U R' U) (R' F R F') U2' (R' F R F')",
-        ygygy, ygygy +              "(R U R' U) (Sledge) U2' (Sledge)",
-        ygygy, line, yggy +         "",
-        yggy, yggy +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 17",
+        caseDrawCodes['ygg'] +                                      "Slash",
+        caseDrawCodes['ygg'], caseDrawCodes['ygg'], line,           
+        caseDrawCodes['ygygy'] +                                    "(R U R' U) (R' F R F') U2' (R' F R F')",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "(R U R' U) (Sledge) U2' (Sledge)",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['yggy'] +       "",
+        caseDrawCodes['yggy'], caseDrawCodes['yggy'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 18
     [
         "(r U R' U) R U2 r2' U' R U' R' U2 r",
         ['\n', line,
-        yyy +                       "OLL 18",
-        ygy +                       "Crown",
-        ygy, ygy, line, ygygy +     "(r U R' U) R U2 r2' U' R U' R' U2 r",
-        ygygy, ygygy +              "(Lightning) (Reversed Lightning)",
-        ygygy, line, ggg +          "y R U2' (R2' F R F') U2' M' (U R U' r')",
-        ggg, ggg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 18",
+        caseDrawCodes['ygy'] +                                      "Crown",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'], line,           
+        caseDrawCodes['ygygy'] +                                    "(r U R' U) R U2 r2' U' R U' R' U2 r",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "(Lightning) (Reversed Lightning)",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['ggg'] +        "y R U2' (R2' F R F') U2' M' (U R U' r')",
+        caseDrawCodes['ggg'], caseDrawCodes['ggg'] +                "",                   
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 19
     [
         "M U (R U R' U') M' (R' F R F')",
         ['\n', line,
-        yyy +                       "OLL 19",
-        ygy +                       "Bunny",
-        ygy, ygy, line, ygygy +     "M U (R U R' U') M' (R' F R F')",
-        ygygy, ygygy +              "M U (Sexy) M' (Sledge)",
-        ygygy, line, ygggy +        "",
-        ygggy, ygggy +              "",
-        ygygy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 19",
+        caseDrawCodes['ygy'] +                                      "Bunny",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'], line,           
+        caseDrawCodes['ygygy'] +                                    "M U (R U R' U') M' (R' F R F')",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "M U (Sexy) M' (Sledge)",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['ygggy'] +      "",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'] +            "",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 20
     [
         "(r U R' U') M2' (U R U' R' U') M'",
         ['\n', line,
-        yyy +                       "OLL 20",
-        ygy +                       "Checkers",
-        ygy, ygy, line, ygygy +     "(r U R' U') M2' (U R U' R' U') M'",
-        ygygy, ygygy +              "(Fat Sexy) M2' (Inverse Sexy) U' M'",
-        ygygy, line, ygy +          "M U (R U R' U') M2' (U R U' r')",
-        ygy, ygy +                  "M U (Sexy) M2' (fat insert), reverse of #1",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 20",
+        caseDrawCodes['ygy'] +                                      "Checkers",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'], line,           
+        caseDrawCodes['ygygy'] +                                    "(r U R' U') M2' (U R U' R' U') M'",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "(Fat Sexy) M2' (Inverse Sexy) U' M'",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['ygy'] +        "M U (R U R' U') M2' (U R U' r')",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'] +                "M U (Sexy) M2' (fat insert), reverse of #1",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 21
     [
         "(R U R' U) (R U' R' U) (R U2' R')",
         ['\n', line,
-        ygygy +                     "OLL 21",
-        ygygy +                     "Cross",
-        ygygy, ygygy, line, yyy +   "(R U R' U) (R U' R' U) (R U2' R')",
-        yyy, yyy +                  "Double Sune",
-        yyy, line, ygygy +          "y (R U2 R') (U' R U R') (U' R U' R')",
-        ygygy, ygygy +              "Begins and ends the same as (anti-)sune",
-        ygygy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 21",
+        caseDrawCodes['ygygy'] +                                    "Cross",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'], line,       
+        caseDrawCodes['yyy'] +                                      "(R U R' U) (R U' R' U) (R U2' R')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Double Sune",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygygy'] +        "y (R U2 R') (U' R U R') (U' R U' R')",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "Begins and ends the same as (anti-)sune",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 22
     [
         "R U2' R2' U' R2 U' R2' U2' R",
         ['\n', line,
-        ygyy +                      "OLL 22",
-        ygyg +                      "Bruno",
-        ygyg, ygyg, line, yyy +     "R U2' R2' U' R2 U' R2' U2' R",
-        yyy, yyy +                  "Never release the R face. Do the U-moves with left hand",
-        yyy, line, ygyg +           "",
-        ygyg, ygyg +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 22",
+        caseDrawCodes['ygyg'] +                                     "Bruno",
+        caseDrawCodes['ygyg'], caseDrawCodes['ygyg'], line,         
+        caseDrawCodes['yyy'] +                                      "R U2' R2' U' R2 U' R2' U2' R",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Never release the R face. Do the U-moves with left hand",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygyg'] +         "",
+        caseDrawCodes['ygyg'], caseDrawCodes['ygyg'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 23
     [
         "R2 D (R' U2 R) D' (R' U2 R')",
         ['\n', line,
-        yyy +                       "OLL 23",
-        yyy +                       "Headlights",
-        yyy, yyy, line, yyy +       "R2 D (R' U2 R) D' (R' U2 R')",
-        yyy, yyy +                  "Push the D' with ringfinger",
-        yyy, line, gyg +            "y2 R2' D' (R U2 R') D (R U2 R)",
-        gyg, gyg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 23",
+        caseDrawCodes['yyy'] +                                      "Headlights",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'], line,           
+        caseDrawCodes['yyy'] +                                      "R2 D (R' U2 R) D' (R' U2 R')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Push the D' with ringfinger",
+        caseDrawCodes['yyy'], line, caseDrawCodes['gyg'] +          "y2 R2' D' (R U2 R') D (R U2 R)",
+        caseDrawCodes['gyg'], caseDrawCodes['gyg'] +                "",                   
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 24
     [
         "(r U R' U') (r' F R F')",
         ['\n', line,
-        yyy +                       "OLL 24",
-        gyy +                       "Chameleon",
-        gyy, gyy, line, yyy +       "(r U R' U') (r' F R F')",
-        yyy, yyy +                  "Sexy followed by Sledge starting with r's instad of R's",
-        yyy, line, gyy +            "",
-        gyy, gyy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 24",
+        caseDrawCodes['gyy'] +                                      "Chameleon",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'], line,           
+        caseDrawCodes['yyy'] +                                      "(r U R' U') (r' F R F')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Sexy followed by Sledge starting with r's instad of R's",
+        caseDrawCodes['yyy'], line, caseDrawCodes['gyy'] +          "",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 25
     [
         "F' (r U R' U') r' F R",
         ['\n', line,
-        ygyy +                      "OLL 25",
-        ygyy +                      "Bowtie",
-        ygyy, ygyy, line, yyy +     "F' (r U R' U') r' F R",
-        yyy, yyy +                  "Same as Chameleon with the last F' in front",
-        yyy, line, yyg +            "",
-        yyg, yyg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 25",
+        caseDrawCodes['ygyy'] +                                     "Bowtie",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'], line,         
+        caseDrawCodes['yyy'] +                                      "F' (r U R' U') r' F R",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Same as Chameleon with the last F' in front",
+        caseDrawCodes['yyy'], line, caseDrawCodes['yyg'] +          "",
+        caseDrawCodes['yyg'], caseDrawCodes['yyg'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 26
     [
         "R U2 R' U' R U' R'",
         ['\n', line,
-        ygyy +                      "OLL 26",
-        ygyy +                      "Anti-Sune",
-        ygyy, ygyy, line, yyy +     "R U2 R' U' R U' R'",
-        yyy, yyy +                  "Inverse Sune",
-        yyy, line, gygy +           "y' R' U' R U' R' U2 R",
-        gygy, gygy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 26",
+        caseDrawCodes['ygyy'] +                                     "Anti-Sune",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'], line,         
+        caseDrawCodes['yyy'] +                                      "R U2 R' U' R U' R'",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Inverse Sune",
+        caseDrawCodes['yyy'], line, caseDrawCodes['gygy'] +         "y' R' U' R U' R' U2 R",
+        caseDrawCodes['gygy'], caseDrawCodes['gygy'] +              "",                   
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 27
     [
         "R U R' U R U2' R'",
         ['\n', line,
-        yygy +                      "OLL 27",
-        gygy +                      "Sune",
-        gygy, gygy, line, yyy +     "R U R' U R U2' R'",
-        yyy, yyy +                  "",
-        yyy, line, yyg +            "y' R' U2' R U R' U R",
-        yyg, yyg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 27",
+        caseDrawCodes['gygy'] +                                     "Sune",
+        caseDrawCodes['gygy'], caseDrawCodes['gygy'], line,         
+        caseDrawCodes['yyy'] +                                      "R U R' U R U2' R'",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "",
+        caseDrawCodes['yyy'], line, caseDrawCodes['yyg'] +          "y' R' U2' R U R' U R",
+        caseDrawCodes['yyg'], caseDrawCodes['yyg'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 28
     [
         "(r U R' U') M (U R U' R')",
         ['\n', line,
-        yyy +                       "OLL 28",
-        yyy +                       "Arrow",
-        yyy, yyy, line, yygy +      "(r U R' U') M (U R U' R')",
-        yygy, yygy +                "(Wide Sexy) M (Inverse Sexy)",
-        yygy, line, ygy +           "",
-        ygy, ygy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 28",
+        caseDrawCodes['yyy'] +                                      "Arrow",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'], line,           
+        caseDrawCodes['yygy'] +                                     "(r U R' U') M (U R U' R')",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "(Wide Sexy) M (Inverse Sexy)",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ygy'] +         "",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 29
     [
         "r2 D' (r U r') D r2 (U' r' U' r)",
         ['\n', line,
-        yyy +                       "OLL 29",
-        ygy +                       "WTF",
-        ygy, ygy, line, yygy +      "r2 D' (r U r') D r2 (U' r' U' r)",
-        yygy, yygy +                "Do the D-moves with left ringfinger",
-        yygy, line, ygygy +         "y (R U R' U') (R U' R') (F' U' F) (R U R')",
-        ygygy, ygygy +              "If you suck at D moves",
-        ygygy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 29",
+        caseDrawCodes['ygy'] +                                      "WTF",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'], line,           
+        caseDrawCodes['yygy'] +                                     "r2 D' (r U r') D r2 (U' r' U' r)",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Do the D-moves with left ringfinger",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ygygy'] +       "y (R U R' U') (R U' R') (F' U' F) (R U R')",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "If you suck at D moves",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 30
     [
         "F U (R U2 R' U') (R U2 R' U') F'",
         ['\n', line,
-        ygygy +                     "OLL 30",
-        ygygy +                     "Anti-WTF",
-        ygygy, ygygy, line, yygy +  "F U (R U2 R' U') (R U2 R' U') F'",
-        yygy, yygy +                "Do the first U with a lefty index push",
-        yygy, line, ygy +           "",
-        ygy, ygy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 30",
+        caseDrawCodes['ygygy'] +                                    "Anti-WTF",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'], line,       
+        caseDrawCodes['yygy'] +                                     "F U (R U2 R' U') (R U2 R' U') F'",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Do the first U with a lefty index push",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ygy'] +         "",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 31
     [
         "R' U' F (U R U' R') F' R",
         ['\n', line,
-        yyy +                       "OLL 31",
-        gyy +                       "Couch",
-        gyy, gyy, line, ygyy +      "R' U' F (U R U' R') F' R",
-        ygyy, ygyy +                "Inverse of Big Lightning",
-        ygyy, line, ggy +           "",
-        ggy, ggy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 31",
+        caseDrawCodes['gyy'] +                                      "Couch",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'], line,           
+        caseDrawCodes['ygyy'] +                                     "R' U' F (U R U' R') F' R",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "Inverse of Big Lightning",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['ggy'] +         "",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 32
     [
         "S (R U R' U') (R' F R f')",
         ['\n', line,
-        yyy +                       "OLL 32",
-        ggy +                       "Anti-Couch",
-        ggy, ggy, line, ygyy +      "S (R U R' U') (R' F R f')",
-        ygyy, ygyy +                "S (Sexy) (Wide Slegde)",
-        ygyy, line, gyy +           "R U B' (U' R' U) R B R'",
-        gyy, gyy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 32",
+        caseDrawCodes['ggy'] +                                      "Anti-Couch",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'], line,           
+        caseDrawCodes['ygyy'] +                                     "S (R U R' U') (R' F R f')",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "S (Sexy) (Wide Slegde)",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['gyy'] +         "R U B' (U' R' U) R B R'",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'] +                "",                   
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 33
     [
         "(R U R' U') (R' F R F')",
         ['\n', line,
-        yyy +                       "OLL 33",
-        ggy +                       "Key",
-        ggy, ggy, line, yyy +       "(R U R' U') (R' F R F')",
-        yyy, yyy +                  "(Sexy) (Slegde)",
-        yyy, line, ggy +            "",
-        ggy, ggy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 33",
+        caseDrawCodes['ggy'] +                                      "Key",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'], line,           
+        caseDrawCodes['yyy'] +                                      "(R U R' U') (R' F R F')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "(Sexy) (Slegde)",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ggy'] +          "",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 34
     [
         "(R U R2' U') (R' F R U) R U' F'",
         ['\n', line,
-        ygygy +                     "OLL 34",
-        ygggy +                     "City",
-        ygggy, ygggy, line, yyy +   "(R U R2' U') (R' F R U) R U' F'",
-        yyy, yyy +                  "(Sexy with R2') (Sledge) R U' F'",
-        yyy, line, ygy +            "(R U R' U') B' (R' F R F') B",
-        ygy, ygy +                  "(Sexy) B' (Sledge) B",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 34",
+        caseDrawCodes['ygggy'] +                                    "City",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'], line,       
+        caseDrawCodes['yyy'] +                                      "(R U R2' U') (R' F R U) R U' F'",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "(Sexy with R2') (Sledge) R U' F'",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygy'] +          "(R U R' U') B' (R' F R F') B",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'] +                "(Sexy) B' (Sledge) B",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 35
     [
         "(R U2') (R2' F R F') (R U2' R')",
         ['\n', line,
-        yygy +                      "OLL 35",
-        yggry +                     "Fish Salad",
-        yggry, yggry, line, ygyy +  "(R U2') (R2' F R F') (R U2' R')",
-        ygyy, ygyy +                "(R U2' R') (Sledge) (R U2' R')",
-        ygyy, line, gyy +           "",
-        gyy, gyy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 35",
+        caseDrawCodes['yggry'] +                                    "Fish Salad",
+        caseDrawCodes['yggry'], caseDrawCodes['yggry'], line,       
+        caseDrawCodes['ygyy'] +                                     "(R U2') (R2' F R F') (R U2' R')",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "(R U2' R') (Sledge) (R U2' R')",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['gyy'] +         "",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 36
     [
         "(R U R' U') F' U2 F (U R U R')",
         ['\n', line,
-        yygy +                      "OLL 36",
-        yggry +                     "Wario",
-        yggry, yggry, line, yygy +  "(R U R' U') F' U2 F (U R U R')",
-        yygy, yygy +                "",
-        yygy, line, gyy +           "(R' U' R U') (R' U R U) l U' R' U x",
-        gyy, gyy +                  "Mirror of Mario",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 36",
+        caseDrawCodes['yggry'] +                                    "Wario",
+        caseDrawCodes['yggry'], caseDrawCodes['yggry'], line,       
+        caseDrawCodes['yygy'] +                                     "(R U R' U') F' U2 F (U R U R')",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "",
+        caseDrawCodes['yygy'], line, caseDrawCodes['gyy'] +         "(R' U' R U') (R' U R U) l U' R' U x",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'] +                "Mirror of Mario",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 37
     [
         "F (R U' R' U') (R U R' F')",
         ['\n', line,
-        yygy +                      "OLL 37",
-        yygy +                      "Mounted Fish",
-        yygy, yygy, line, yygy +    "F (R U' R' U') (R U R' F')",
-        yygy, yygy +                "",
-        yygy, line, ggy +           "",
-        ggy, ggy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 37",
+        caseDrawCodes['yygy'] +                                     "Mounted Fish",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'], line,         
+        caseDrawCodes['yygy'] +                                     "F (R U' R' U') (R U R' F')",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ggy'] +         "",
+        caseDrawCodes['ggy'], caseDrawCodes['ggy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 38
     [
         "(R U R' U) (R U' R' U') (R' F R F')",
         ['\n', line,
-        yyy +                       "OLL 38",
-        gyy +                       "Mario",
-        gyy, gyy, line, yygy +      "(R U R' U) (R U' R' U') (R' F R F')",
-        yygy, yygy +                "Sune with Sledge insert",
-        yygy, line, yggry +         "",
-        yggry, yggry +              "",
-        yygy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 38",
+        caseDrawCodes['gyy'] +                                      "Mario",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'], line,           
+        caseDrawCodes['yygy'] +                                     "(R U R' U) (R U' R' U') (R' F R F')",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Sune with Sledge insert",
+        caseDrawCodes['yygy'], line, caseDrawCodes['yggry'] +       "",
+        caseDrawCodes['yggry'], caseDrawCodes['yggry'] +            "",
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 39
     [
         "(R U R') (F' U' F) (U R U2 R')",
         ['\n', line,
-        ygyy +                      "OLL 39",
-        ygrgy +                     "Lefty Big Lightning",
-        ygrgy, ygrgy, line, yyy +   "(R U R') (F' U' F) (U R U2 R')",
-        yyy, yyy +                  "",
-        yyy, line, ygg +            "y2 L F' (L' U' L U) F U' L'",
-        ygg, ygg +                  "Mirror of Big Lightning",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 39",
+        caseDrawCodes['ygrgy'] +                                    "Lefty Big Lightning",
+        caseDrawCodes['ygrgy'], caseDrawCodes['ygrgy'], line,       
+        caseDrawCodes['yyy'] +                                      "(R U R') (F' U' F) (U R U2 R')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygg'] +          "y2 L F' (L' U' L U) F U' L'",
+        caseDrawCodes['ygg'], caseDrawCodes['ygg'] +                "Mirror of Big Lightning",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 40
     [
         "R' F (R U R' U') F' U R",
         ['\n', line,
-        yyy +                       "OLL 40",
-        ygg +                       "Big Lightning",
-        ygg, ygg, line, yyy +       "R' F (R U R' U') F' U R",
-        yyy, yyy +                  "R' F (Sexy) F' U R",
-        yyy, line, ygrgy +          "",
-        ygrgy, ygrgy +              "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 40",
+        caseDrawCodes['ygg'] +                                      "Big Lightning",
+        caseDrawCodes['ygg'], caseDrawCodes['ygg'], line,           
+        caseDrawCodes['yyy'] +                                      "R' F (R U R' U') F' U R",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "R' F (Sexy) F' U R",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygrgy'] +        "",
+        caseDrawCodes['ygrgy'], caseDrawCodes['ygrgy'] +            "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 41
     [
         "(R' U' R U' R' U2 R) F (R U R' U') F'",
         ['\n', line,
-        yyy +                       "OLL 41",
-        ygy +                       "Anti-Poodle",
-        ygy, ygy, line, yygy +      "(R' U' R U' R' U2 R) F (R U R' U') F'",
-        yygy, yygy +                "(Anti-Sune) + (T)",
-        yygy, line, gyg +           "",
-        gyg, gyg +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 41",
+        caseDrawCodes['ygy'] +                                      "Anti-Poodle",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'], line,           
+        caseDrawCodes['yygy'] +                                     "(R' U' R U' R' U2 R) F (R U R' U') F'",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "(Anti-Sune) + (T)",
+        caseDrawCodes['yygy'], line, caseDrawCodes['gyg'] +         "",
+        caseDrawCodes['gyg'], caseDrawCodes['gyg'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 42
     [
         "(R U R' U R U2' R') F (R U R' U') F'",
         ['\n', line,
-        yyy +                       "OLL 42",
-        gyg +                       "Poodle",
-        gyg, gyg, line, yygy +      "(R U R' U R U2' R') F (R U R' U') F'",
-        yygy, yygy +                "(Sune) + (T)",
-        yygy, line, ygy +           "",
-        ygy, ygy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 42",
+        caseDrawCodes['gyg'] +                                      "Poodle",
+        caseDrawCodes['gyg'], caseDrawCodes['gyg'], line,           
+        caseDrawCodes['yygy'] +                                     "(R U R' U R U2' R') F (R U R' U') F'",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "(Sune) + (T)",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ygy'] +         "",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 43
     [
         "R' U' F' U F R",
         ['\n', line,
-        yyy +                       "OLL 43",
-        yyy +                       "Inverse P",
-        yyy, yyy, line, yygy +      "R' U' F' U F R",
-        yygy, yygy +                "",
-        yygy, line, ggg +           "y' f' (L' U' L U) f",
-        ggg, ggg +                  "Mirror of P",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 43",
+        caseDrawCodes['yyy'] +                                      "Inverse P",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'], line,           
+        caseDrawCodes['yygy'] +                                     "R' U' F' U F R",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ggg'] +         "y' f' (L' U' L U) f",
+        caseDrawCodes['ggg'], caseDrawCodes['ggg'] +                "Mirror of P",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 44
     [
         "f (R U R' U') f'",
         ['\n', line,
-        ygyy +                      "OLL 44",
-        ygrgy +                     "P",
-        ygrgy, ygrgy, line, ygyy +  "f (R U R' U') f'",
-        ygyy, ygyy +                "f (Sexy) f'",
-        ygyy, line, ygyy +          "y2 F (U R U' R') F'",
-        ygyy, ygyy +                "F (Inverse Sexy) F’",
-        ygyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 44",
+        caseDrawCodes['ygrgy'] +                                    "P",
+        caseDrawCodes['ygrgy'], caseDrawCodes['ygrgy'], line,       
+        caseDrawCodes['ygyy'] +                                     "f (R U R' U') f'",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "f (Sexy) f'",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['ygyy'] +        "y2 F (U R U' R') F'",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "F (Inverse Sexy) F’",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 45
     [
         "F (R U R' U') F'",
         ['\n', line,
-        ygyy +                      "OLL 45",
-        ygrgy +                     "T",
-        ygrgy, ygrgy, line, yyy +   "F (R U R' U') F'",
-        yyy, yyy +                  "F (Sexy) F'",
-        yyy, line, ygrgy +          "",
-        ygrgy, ygrgy +              "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 45",
+        caseDrawCodes['ygrgy'] +                                    "T",
+        caseDrawCodes['ygrgy'], caseDrawCodes['ygrgy'], line,       
+        caseDrawCodes['yyy'] +                                      "F (R U R' U') F'",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "F (Sexy) F'",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygrgy'] +        "",
+        caseDrawCodes['ygrgy'], caseDrawCodes['ygrgy'] +            "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 46
     [
         "R' U' (R' F R F') U R",
         ['\n', line,
-        yygy +                      "OLL 46",
-        yygy +                      "Seein' Headlights",
-        yygy, yygy, line, ygygy +   "R' U' (R' F R F') U R",
-        ygygy, ygygy +              "R' U' (Sledge) U R",
-        ygygy, line, yygy +         "",
-        yygy, yygy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 46",
+        caseDrawCodes['yygy'] +                                     "Seein' Headlights",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'], line,         
+        caseDrawCodes['ygygy'] +                                    "R' U' (R' F R F') U R",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "R' U' (Sledge) U R",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['yygy'] +       "",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "",
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 47
     [
         "R' U' (R' F R F') (R' F R F') U R",
         ['\n', line,
-        yygy +                      "OLL 47",
-        gygry +                     "Anti-Breakneck",
-        gygry, gygry, line, ygyy +  "R' U' (R' F R F') (R' F R F') U R",
-        ygyy, ygyy +                "R' U' (double Sledge) U R",
-        ygyy, line, gggy +          "F' (L' U' L U) (L' U' L U) F",
-        gggy, gggy +                "",
-        yygy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 47",
+        caseDrawCodes['gygry'] +                                    "Anti-Breakneck",
+        caseDrawCodes['gygry'], caseDrawCodes['gygry'], line,       
+        caseDrawCodes['ygyy'] +                                     "R' U' (R' F R F') (R' F R F') U R",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "R' U' (double Sledge) U R",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['gggy'] +        "F' (L' U' L U) (L' U' L U) F",
+        caseDrawCodes['gggy'], caseDrawCodes['gggy'] +              "",                   
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 48
     [
         "F (R U R' U') (R U R' U') F'",
         ['\n', line,
-        ygyy +                     "OLL 48",
-        ygryg +                     "Breakneck",
-        ygryg, ygryg, line, yygy +  "F (R U R' U') (R U R' U') F'",
-        yygy, yygy +                "F (double Sexy) F'",
-        yygy, line, yggg +          "",
-        yggg, yggg +                "",
-        ygyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 48",
+        caseDrawCodes['ygryg'] +                                    "Breakneck",
+        caseDrawCodes['ygryg'], caseDrawCodes['ygryg'], line,       
+        caseDrawCodes['yygy'] +                                     "F (R U R' U') (R U R' U') F'",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "F (double Sexy) F'",
+        caseDrawCodes['yygy'], line, caseDrawCodes['yggg'] +        "",
+        caseDrawCodes['yggg'], caseDrawCodes['yggg'] +              "",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 49
     [
         "F R' F2 R U2 R U2 R' F",
         ['\n', line,
-        ygygy +                     "OLL 49",
-        ygygy +                     "Back Squeezy",
-        ygygy, ygygy, line, yygy +  "F R' F2 R U2 R U2 R' F",
-        yygy, yygy +                "Mirror of Front Squeezy #1",
-        yygy, line, ggg +           "r' U r2 U' r2' U' r2 U r'",
-        ggg, ggg +                  "Mirror of Front Squeezy #2 | Never release r",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 49",
+        caseDrawCodes['ygygy'] +                                    "Back Squeezy",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'], line,       
+        caseDrawCodes['yygy'] +                                     "F R' F2 R U2 R U2 R' F",
+        caseDrawCodes['yygy'], caseDrawCodes['yygy'] +              "Mirror of Front Squeezy #1",
+        caseDrawCodes['yygy'], line, caseDrawCodes['ggg'] +         "r' U r2 U' r2' U' r2 U r'",
+        caseDrawCodes['ggg'], caseDrawCodes['ggg'] +                "Mirror of Front Squeezy #2 | Never release r",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 50
     [
         "F' R U2 R' U2 R' F2 R F'",
         ['\n', line,
-        ygygy +                     "OLL 50",
-        ygygy +                     "Front Squeezy",
-        ygygy, ygygy, line, ygyy +  "F' R U2 R' U2 R' F2 R F'",
-        ygyy, ygyy +                "Mirror of Back Squeezy #1",
-        ygyy, line, ggg +           "r U' r2' U r2 U r2' U' r",
-        ggg, ggg +                  "Mirror of Back Squeezy #2 | Never release r",
-        yyy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 50",
+        caseDrawCodes['ygygy'] +                                    "Front Squeezy",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'], line,       
+        caseDrawCodes['ygyy'] +                                     "F' R U2 R' U2 R' F2 R F'",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "Mirror of Back Squeezy #1",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['ggg'] +         "r U' r2' U r2 U r2' U' r",
+        caseDrawCodes['ggg'], caseDrawCodes['ggg'] +                "Mirror of Back Squeezy #2 | Never release r",
+        caseDrawCodes['yyy'], line, w, '\n']
     ],
 
     # 51
     [
         "f (R U R' U') (R U R' U') f'",
         ['\n', line,
-        ygyy +                      "OLL 51",
-        yggg +                      "Ant",
-        yggg, yggg, line, yyy +     "f (R U R' U') (R U R' U') f'",
-        yyy, yyy +                  "f 2(Sexy) f'",
-        yyy, line, yggg +           "y2 F (U R U' R') (U R U' R') F'",
-        yggg, yggg +                "F 2(Inverse Sexy) F'",
-        ygyy, line, w, '\n']
+        caseDrawCodes['ygyy'] +                                     "OLL 51",
+        caseDrawCodes['yggg'] +                                     "Ant",
+        caseDrawCodes['yggg'], caseDrawCodes['yggg'], line,         
+        caseDrawCodes['yyy'] +                                      "f (R U R' U') (R U R' U') f'",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "f 2(Sexy) f'",
+        caseDrawCodes['yyy'], line, caseDrawCodes['yggg'] +         "y2 F (U R U' R') (U R U' R') F'",
+        caseDrawCodes['yggg'], caseDrawCodes['yggg'] +              "F 2(Inverse Sexy) F'",
+        caseDrawCodes['ygyy'], line, w, '\n']
     ],
 
     # 52
     [
         "(R U R' U R U') y (R U' R') F'",
         ['\n', line,
-        yygy +                      "OLL 52",
-        gygry +                     "Rice Cooker",
-        gygry, gygry, line, ygygy + "(R U R' U R U') y (R U' R') F'",
-        ygygy, ygygy +              "Starts like Sune with different insert",
-        ygygy, line, gygry +        "(R' U' R U' R' U) y' (R' U R) B",
-        gygry, gygry +              "",
-        yygy, line, w, '\n']
+        caseDrawCodes['yygy'] +                                     "OLL 52",
+        caseDrawCodes['gygry'] +                                    "Rice Cooker",
+        caseDrawCodes['gygry'], caseDrawCodes['gygry'], line,       
+        caseDrawCodes['ygygy'] +                                    "(R U R' U R U') y (R U' R') F'",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "Starts like Sune with different insert",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['gygry'] +      "(R' U' R U' R' U) y' (R' U R) B",
+        caseDrawCodes['gygry'], caseDrawCodes['gygry'] +            "",                   
+        caseDrawCodes['yygy'], line, w, '\n']
     ],
 
     # 53
     [
         "(r' U' R U') (R' U R U') R' U2 r",
         ['\n', line,
-        ygygy +                     "OLL 53",
-        ygggy +                     "Frying Pan",
-        ygggy, ygggy, line, ygyy +  "(r' U' R U') (R' U R U') R' U2 r",
-        ygyy, ygyy +                "fat double Anti-Sune",
-        ygyy, line, ygygy +         "",
-        ygygy, ygygy +              "",
-        ygygy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 53",
+        caseDrawCodes['ygggy'] +                                    "Frying Pan",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'], line,       
+        caseDrawCodes['ygyy'] +                                     "(r' U' R U') (R' U R U') R' U2 r",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "fat double Anti-Sune",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['ygygy'] +       "",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 54
     [
         "(r U R' U) (R U' R' U) R U2' r'",
         ['\n', line,
-        ygygy +                     "OLL 54",
-        ygygy +                     "Anti-Frying Pan",
-        ygygy, ygygy, line, ygyy +  "(r U R' U) (R U' R' U) R U2' r'",
-        ygyy, ygyy +                "fat double Sune",
-        ygyy, line, ygggy +         "",
-        ygggy, ygggy +              "",
-        ygygy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 54",
+        caseDrawCodes['ygygy'] +                                    "Anti-Frying Pan",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'], line,       
+        caseDrawCodes['ygyy'] +                                     "(r U R' U) (R U' R' U) R U2' r'",
+        caseDrawCodes['ygyy'], caseDrawCodes['ygyy'] +              "fat double Sune",
+        caseDrawCodes['ygyy'], line, caseDrawCodes['ygggy'] +       "",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'] +            "",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 55
     [
         "R U2 R2 (U’ R U' R’) U2 F R F'",
         ['\n', line,
-        ygygy +                     "OLL 55",
-        ygygy +                     "Highway",
-        ygygy, ygygy, line, ygygy + "R U2 R2 (U’ R U' R’) U2 F R F'",
-        ygygy, ygygy +              "Shorter but shittier",
-        ygygy, line, ygygy +        "y (R’ F R U) (R U' R2' F') R2 U' R' (U R U R')",
-        ygygy, ygygy +              "Longer but fingertrickable",
-        ygygy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 55",
+        caseDrawCodes['ygygy'] +                                    "Highway",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'], line,       
+        caseDrawCodes['ygygy'] +                                    "R U2 R2 (U’ R U' R’) U2 F R F'",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "Shorter but shittier",
+        caseDrawCodes['ygygy'], line, caseDrawCodes['ygygy'] +      "y (R’ F R U) (R U' R2' F') R2 U' R' (U R U R')",
+        caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +            "Longer but fingertrickable",
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 56
     [
         "alg1",
         ['\n', line,
-        ygygy +                     "OLL 56",
-        ygggy +                     "Streetlights",
-        ygggy, ygggy, line, yyy +   "r U r' (U R U' R') (U R U' R') r U' r'",
-        yyy, yyy +                  "Long but fast",
-        yyy, line, ygggy +          "r' U' r (U' R' U R) (U' R' U R) r' U r",
-        ygggy, ygggy +              "Mirror",
-        ygygy, line, w, '\n']
+        caseDrawCodes['ygygy'] +                                    "OLL 56",
+        caseDrawCodes['ygggy'] +                                    "Streetlights",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'], line,       
+        caseDrawCodes['yyy'] +                                      "r U r' (U R U' R') (U R U' R') r U' r'",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "Long but fast",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygggy'] +        "r' U' r (U' R' U R) (U' R' U R) r' U r",
+        caseDrawCodes['ygggy'], caseDrawCodes['ygggy'] +            "Mirror",                 
+        caseDrawCodes['ygygy'], line, w, '\n']
     ],
 
     # 57
     [
         "(R U R' U') M' (U R U' r')",
         ['\n', line,
-        yyy +                       "OLL 57",
-        ygy +                       "H",
-        ygy, ygy, line, yyy +       "(R U R' U') M' (U R U' r')",
-        yyy, yyy +                  "(Sexy) M' (Wide Inverse Sexy)",
-        yyy, line, ygy +            "",
-        ygy, ygy +                  "",
-        yyy, line, w, '\n']
+        caseDrawCodes['yyy'] +                                      "OLL 57",
+        caseDrawCodes['ygy'] +                                      "H",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'], line,           
+        caseDrawCodes['yyy'] +                                      "(R U R' U') M' (U R U' r')",
+        caseDrawCodes['yyy'], caseDrawCodes['yyy'] +                "(Sexy) M' (Wide Inverse Sexy)",
+        caseDrawCodes['yyy'], line, caseDrawCodes['ygy'] +          "",
+        caseDrawCodes['ygy'], caseDrawCodes['ygy'] +                "",
+        caseDrawCodes['yyy'], line, w, '\n']
     ]
 ]
+
 
 # oll scrambles
 ollScrambles = [
@@ -1052,45 +1153,22 @@ ollScrambles = [
 ]
 
 # alg subsets for training mode
-edgesOriented = [ollScrambles[20], ollScrambles[21], ollScrambles[22], ollScrambles[23], ollScrambles[24], ollScrambles[25], ollScrambles[26]]              # All Edges Oriented Correctly:     21, 22, 23, 24, 25, 26, 27
-tCases = [ollScrambles[32], ollScrambles[44]]                                                                                                               # T-Shapes:                         33, 45
-squareCases = [ollScrambles[4], ollScrambles[5]]                                                                                                            # Squares:                          5, 6
-cornersOriented = [ollScrambles[27], ollScrambles[56]]                                                                                                      # Corners Correct, Edges Flipped:   28, 57
-lightningCases = [ollScrambles[6], ollScrambles[7], ollScrambles[10], ollScrambles[11], ollScrambles[38], ollScrambles[39]]                                 # Lightning Bolts:                  7, 8, 11, 12, 39, 40
-pCases = [ollScrambles[30], ollScrambles[31], ollScrambles[42], ollScrambles[43]]                                                                           # P-Shapes:                         31, 32, 43, 44
-cCases = [ollScrambles[33], ollScrambles[45]]                                                                                                               # C-Shapes:                         34, 46
-fishCases = [ollScrambles[8], ollScrambles[9], ollScrambles[34], ollScrambles[36]]                                                                          # Fish-Shapes:                      9, 10, 35, 37
-lCases = [ollScrambles[46], ollScrambles[47], ollScrambles[48], ollScrambles[49], ollScrambles[52], ollScrambles[53]]                                       # L-Shapes:                         47, 48, 49, 50, 53, 54
-wCases = [ollScrambles[35], ollScrambles[37]]                                                                                                               # W-Shapes:                         36, 38
-iCases = [ollScrambles[50], ollScrambles[51], ollScrambles[54], ollScrambles[55]]                                                                           # I-Shapes:                         51, 52, 55, 56
-knightMoveCases = [ollScrambles[12], ollScrambles[13], ollScrambles[14], ollScrambles[15]]                                                                  # Knight Move Shapes:               13, 14, 15, 16
-awkwardCases = [ollScrambles[28], ollScrambles[29], ollScrambles[40], ollScrambles[41]]                                                                     # Awkward Shapes:                   29, 30, 41, 42
-dotCases = [ollScrambles[0], ollScrambles[1], ollScrambles[2], ollScrambles[3], ollScrambles[16], ollScrambles[17], ollScrambles[18], ollScrambles[19]]     # Dot:                              1, 2, 3, 4, 17, 18, 19, 20
-
-
-
-# set mode
-mode = ''
-
-# recap mode
-if len(argv) == 1:
-    mode = 'recap'
-    cases = caseSelection('all')
-
-# training mode
-elif argv[1].lower() not in ['gallery', 'gal', 'cases']:
-    mode = 'training'
-    cases = caseSelection(argv[1])
-
-# gallery mode
-elif argv[1].lower() in ['gallery', 'gal', 'cases']:
-    mode = 'gallery'
-    if len(argv) == 2:
-        cases = caseSelection('all')
-    
-    elif len(argv) == 3:
-        cases = caseSelection(argv[2])
-
+caseGroups = {
+    'edgesOriented' : [ollScrambles[20], ollScrambles[21], ollScrambles[22], ollScrambles[23], ollScrambles[24], ollScrambles[25], ollScrambles[26]],             # All Edges Oriented Correctly:     21, 22, 23, 24, 25, 26, 27
+    'tCases' : [ollScrambles[32], ollScrambles[44]],                                                                                                              # T-Shapes:                         33, 45
+    'squareCases' : [ollScrambles[4], ollScrambles[5]],                                                                                                           # Squares:                          5, 6
+    'cornersOriented' : [ollScrambles[27], ollScrambles[56]],                                                                                                     # Corners Correct, Edges Flipped:   28, 57
+    'lightningCases' : [ollScrambles[6], ollScrambles[7], ollScrambles[10], ollScrambles[11], ollScrambles[38], ollScrambles[39]],                                # Lightning Bolts:                  7, 8, 11, 12, 39, 40
+    'pCases' : [ollScrambles[30], ollScrambles[31], ollScrambles[42], ollScrambles[43]],                                                                          # P-Shapes:                         31, 32, 43, 44
+    'cCases' : [ollScrambles[33], ollScrambles[45]],                                                                                                              # C-Shapes:                         34, 46
+    'fishCases' : [ollScrambles[8], ollScrambles[9], ollScrambles[34], ollScrambles[36]],                                                                         # Fish-Shapes:                      9, 10, 35, 37
+    'lCases' : [ollScrambles[46], ollScrambles[47], ollScrambles[48], ollScrambles[49], ollScrambles[52], ollScrambles[53]],                                      # L-Shapes:                         47, 48, 49, 50, 53, 54
+    'wCases' : [ollScrambles[35], ollScrambles[37]],                                                                                                              # W-Shapes:                         36, 38
+    'iCases' : [ollScrambles[50], ollScrambles[51], ollScrambles[54], ollScrambles[55]],                                                                          # I-Shapes:                         51, 52, 55, 56
+    'knightMoveCases' : [ollScrambles[12], ollScrambles[13], ollScrambles[14], ollScrambles[15]],                                                                 # Knight Move Shapes:               13, 14, 15, 16
+    'awkwardCases' : [ollScrambles[28], ollScrambles[29], ollScrambles[40], ollScrambles[41]],                                                                    # Awkward Shapes:                   29, 30, 41, 42
+    'dotCases' : [ollScrambles[0], ollScrambles[1], ollScrambles[2], ollScrambles[3], ollScrambles[16], ollScrambles[17], ollScrambles[18], ollScrambles[19]]     # Dot:                              1, 2, 3, 4, 17, 18, 19, 20
+}
 
 
 # set main
