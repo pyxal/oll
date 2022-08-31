@@ -1,59 +1,63 @@
 #!/bin/bash/python3
 
 hlp = """
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# CFOP-OLL Trainer V3.0                                         #
-# Made by Pyxal                                                 #
-#                                                               #
-# Recap: train cases one after another without reoccurrence     #
-# Training: train cases with random occurrence                  #
-#                                                               #
-# All cases selected in recap mode by default                   #
-# Arguments can be parsed to train the corresponding cases      #
-# in training mode:                                             #
-#                                                               #
-#    Arg                 Description                            #
-#                                                               #
-#    Sune                All edges oriented cases               #
-#    T                   T-shape cases                          #
-#    Squares             Square cases                           #
-#    Corners             All Cornors oriented cases             #
-#    Lightning           Lightning cases                        #
-#    P                   P-shape cases                          #
-#    C                   C-shape cases                          #
-#    Fish                Fish-shape cases                       #
-#    L                   L-shape cases                          #
-#    W                   W-shape cases                          #
-#    I                   I-shape cases                          #
-#    Knights             Knight Move cases                      #
-#    Awkward             Awkward-shape cases                    #
-#    Dot                 Dot cases                              #
-#    1 - 57              Specific case                          #
-#                                                               #
-#    Train               switch to training mode                #
-#                        with all cases                         #
-#                                                               #
-#    Gallery             show case gallery (not windows)        #
-#                        combineable with other args            #
-#                        to show corresponding cases            #
-#                                                               #
-#                                                               #
-# While training, the following inputs can be used:             #
-#                                                               #
-#    a, alg              show alg                               #
-#    c, case             show case (not windows)                #
-#    h, help             show this help message                 #
-#    e, exit             exit                                   #
-#                                                               #
-#                                                               #
-# Idea and scrambles borrowed from bestsiteever.ru/oll          #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                   #
+#   CFOP-OLL Trainer V3.0                                           #
+#   Made by Pyxal                                                   #
+#                                                                   #
+#   Recap: train cases one after another without reoccurrence       #
+#   Training: train cases with random occurrence                    #
+#                                                                   #
+#   All cases selected in recap mode by default.                    #
+#   Arguments (case-insensitive) can be parsed to train             #
+#   corresponding cases in training mode:                           #
+#                                                                   #
+#      Arg                 Description                              #
+#                                                                   #
+#      Sune                All edges oriented cases (COLL)          #
+#      T                   T-shape cases                            #
+#      Squares             Square cases                             #
+#      Corners             All Cornors oriented cases               #
+#      Lightning           Lightning cases                          #
+#      P                   P-shape cases                            #
+#      C                   C-shape cases                            #
+#      Fish                Fish-shape cases                         #
+#      L                   L-shape cases                            #
+#      W                   W-shape cases                            #
+#      I                   I-shape cases                            #
+#      Knights             Knight Move cases                        #
+#      Awkward             Awkward-shape cases                      #
+#      Dot                 Dot cases                                #
+#      1 - 57              Specific case                            #
+#                                                                   #
+#      Train               switch to training mode                  #
+#                          with all cases                           #
+#                                                                   #
+#      Gallery             show case gallery (windows with cygwin)  #
+#                          combineable with other args              #
+#                          to show corresponding cases              #
+#                                                                   #
+#                                                                   #
+#   While training, the following inputs can be used:               #
+#                                                                   #
+#      a, alg              show alg                                 #
+#      c, case             show case (windows only in cygwin)       #
+#      h, help             show this help message                   #
+#      e, exit             exit                                     #
+#                                                                   #
+#                                                                   #
+#   Idea and scrambles borrowed from:                               #
+#   https://bestsiteever.ru/oll                                     #
+#   https://github.com/Roman-/oll_trainer                           #
+#                                                                   #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 """
 
 # imports
+from sys import argv
 from platform import machine
 from random import choice, sample
-from sys import argv
 
 
 def main():
@@ -1149,7 +1153,7 @@ ollScrambles = [
     [53, "R B L' B L B' L' B L B2 R'", "F R' F' R U R' F R F2 U F", "R' F' U F2 R2 D R D' R F' R", "F U F' L' U L U L2 B L B' L", "L U' R' U L' U R U2 R B' R' B", "R B U B2 U' R' U B U2 B U2 B'", "L' U' B L' B' L2 B L' U L U' B'", "B U2 B' U2 B' U' R U B2 U' B' R'", "B' R' F' U2 F U' R B' R B R' B", "L' R U R' U' L U2 F2 L F L' F", "B' R B' R' B2 R' U L U' R U2 L'", "F' U L F' L' F2 R' F R F2 U F", "F U' R U R' F' U' L2 B L B' L", "R U' B U2 B2 R B R2 U2 F' U' F", "B2 U2 L' B' L B2 U B2 U B U2 B", "L U L' U L2 R' F' L' F R U2 L'", "F' U2 B L F' L' B' F2 U F' U F", "R U2 R2 U' R2 B U' B2 R' B2 U' B'", "B U' L' F U' F2 L F2 U F' L B'", "B U R' U2 R B2 L' B2 L2 U' L' B'", "R B U B2 R2 B R2 F' U2 F U' R'", "R U R2 F L2 D' F D F' L2 F' R", "B L' U2 F' L F2 U2 F' L2 B L' B2", "F R2 B' F R' D2 R' D2 R D2 B F2", "B' R' F2 D2 L B2 L B2 L2 D2 B F2"],
     [54, "L U2 L2 U' L U' L' U2 B L B'", "R' U2 R2 U R' U R U2 B' R' B", "R B U' L U L2 B' R' B L B'", "L' B' U R' U' R2 B L B' R' B", "L D' L2 U B' U2 B U' L2 D L'", "L' D L2 U' F U2 F' U L2 D' L", "L U' F2 D F' U2 F D' F2 U L'", "L' U B2 D' B U2 B' D B2 U' L", "R B2 L2 D L D' B2 R' B L B'", "L' B2 R2 D' R' D B2 L B' R' B", "B L' U' B' U B2 L B2 U' B U B'", "F' L U F U' F2 L' F2 U F' U' F", "B L' B U' B L B L' B2 U B2 L", "B L' U' L2 U' L2 U2 B L B' U' B'", "F' L F' U F' L' F' L F2 U' F2 L'", "B' R U R2 U R2 U2 B' R' B U B", "R' U2 R2 U B U2 L U L' B2 R' B", "L U2 L2 U' B' U2 R' U' R B2 L B'", "B L2 F' L' B' F2 U F' U' B L' B'", "B' R2 F R B F2 U' F U B' R B", "R B2 L' D B D2 R D R2 B2 L B'", "L' B2 R D' B' D2 L' D' L2 B2 R' B"],
     [55, "L F R F' L2 F U R' U' F' L", "R' F' L' F R2 F' U' L U F R'", "R B' R' B U2 R' U R U' B U2 B'", "L' B L B' U2 L U' L' U B' U2 B", "F R U R' U' R F' L F R' F' L'", "F' L' U' L U L' F R' F' L F R", "R U2 L' U R' U' L F2 L F L' F", "R' U2 L U' R U L' B2 L' B' L B'", "L F L' U R U' L R2 F R F2 L'", "L' B' L U' R' U L' R2 B' R' B2 L", "F' U' L U2 L U' L U L' U2 L' U' F", "F U R' U2 R' U R' U' R U2 R U F'", "B U L U' F U' F' L' U' L U L' B'", "B' U' R' U F' U F R U R' U' R B", "F R U R' U2 R' U2 R U F' R' U R", "F' L' U' L U2 L U2 L' U' F L U' L'", "R B' R' B U2 B U' B L' B' L U' B'", "L' B L B' U2 B' U B' R B R' U B", "F R U R' U2 B U B' F' U2 B U B'", "B' R' U' R U2 F' U' B F U2 F' U' F", "B U' R' U L2 U' R U L' U L' U' B'"],
-    [56, "L U' L' U L R' F' L F L2 R", "L' R' U L U' L' R B L' B' L2", "L U L' B' F U R' U' R B F'", "R U B' U' B R' U B L' B' L", "R' U' F U ' R U' F' L F L'", "F2 L F L' F R U R' F' U' F", "F2 R' F' R F' L' U' L F U F'", "R B L U' L' B' U2 B U B' R'", "L' U' L' B' U' B U L2 U2 L' U' L", "F R U2 R' U F' L F' L' F2 U F'", "F' L' U2 L U' F R' F R F2 U' F", "R U2 R' U' R B U2 B' R' F' U F", "B U' B' L' R B2 R' U' B U B2 L", "R B U' B' U2 L R2 D' F D L' R", "L' U B2 F D' R' D B' F' L' B' L2", "F U L F' D R' F' R' D R2 D2 L'", "F L' D2 U2 R U' R' D2 U2 L U F'", "F R U2 R2 F2 D' F' D F' R U2 F'", "L U2 F' L D' L D L2 F2 U2 F' L'", "F' R U F R' D2 L2 D L' F' L' D", "D' B R' U' B' R D2 L2 D' L B L", "F2 U F2 R B L' U2 L B' R' U' F2", "B' R B2 F2 L' D L B2 F2 R' U' B", "L2 D' B2 D L2 B F R U2 R' B' F'", "B2 D' R2 F' L' B U2 B' L F D B2"]
+    [56, "L U' L' U L R' F' L F L2 R", "L' R' U L U' L' R B L' B' L2", "L U L' B' F U R' U' R B F'", "R U B' U' B R' U B L' B' L", "R' U' F U F' R U' F' L F L'", "F2 L F L' F R U R' F' U' F", "F2 R' F' R F' L' U' L F U F'", "R B L U' L' B' U2 B U B' R'", "L' U' L' B' U' B U L2 U2 L' U' L", "F R U2 R' U F' L F' L' F2 U F'", "F' L' U2 L U' F R' F R F2 U' F", "R U2 R' U' R B U2 B' R' F' U F", "B U' B' L' R B2 R' U' B U B2 L", "R B U' B' U2 L R2 D' F D L' R", "L' U B2 F D' R' D B' F' L' B' L2", "F U L F' D R' F' R' D R2 D2 L'", "F L' D2 U2 R U' R' D2 U2 L U F'", "F R U2 R2 F2 D' F' D F' R U2 F'", "L U2 F' L D' L D L2 F2 U2 F' L'", "F' R U F R' D2 L2 D L' F' L' D", "D' B R' U' B' R D2 L2 D' L B L", "F2 U F2 R B L' U2 L B' R' U' F2", "B' R B2 F2 L' D L B2 F2 R' U' B", "L2 D' B2 D L2 B F R U2 R' B' F'", "B2 D' R2 F' L' B U2 B' L F D B2"]
 ]
 
 # alg subsets for training mode
