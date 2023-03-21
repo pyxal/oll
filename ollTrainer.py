@@ -3,8 +3,8 @@
 hlp = """
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                   #
-#   CFOP-OLL Trainer V3.0                                           #
-#   Made by Pyxal                                                   #
+#   CFOP-OLL Trainer V3.0                             Last change:  #
+#   Made by Pyxal                                       21.03.2023  #
 #                                                                   #
 #   Recap: train cases one after another without reoccurrence       #
 #   Training: train cases with random occurrence                    #
@@ -15,20 +15,20 @@ hlp = """
 #                                                                   #
 #      Arg                 Description                              #
 #                                                                   #
-#      Sune                All edges oriented cases (COLL)          #
-#      T                   T-shape cases                            #
-#      Squares             Square cases                             #
-#      Corners             All Cornors oriented cases               #
-#      Lightning           Lightning cases                          #
-#      P                   P-shape cases                            #
-#      C                   C-shape cases                            #
-#      Fish                Fish-shape cases                         #
-#      L                   L-shape cases                            #
-#      W                   W-shape cases                            #
-#      I                   I-shape cases                            #
-#      Knights             Knight Move cases                        #
-#      Awkward             Awkward-shape cases                      #
-#      Dot                 Dot cases                                #
+#      sune                All edges oriented cases (COLL)          #
+#      t                   T-shape cases                            #
+#      squares             Square cases                             #
+#      corners             All Cornors oriented cases               #
+#      lightning           Lightning cases                          #
+#      p                   P-shape cases                            #
+#      c                   C-shape cases                            #
+#      fish                Fish-shape cases                         #
+#      l                   L-shape cases                            #
+#      w                   W-shape cases                            #
+#      i                   I-shape cases                            #
+#      knights             Knight Move cases                        #
+#      awkward             Awkward-shape cases                      #
+#      dot                 Dot cases                                #
 #      1 - 57              Specific case                            #
 #                                                                   #
 #      Train               switch to training mode                  #
@@ -787,15 +787,15 @@ ollCases = [
 
     # 36
     [
-        "(R U R' U') F' U2 F (U R U R')",
+        "R U2 r D r' U2 r D' r' R'",
         ['\n', colors['line'],
         caseDrawCodes['yygy'] +                                             "OLL 36",
         caseDrawCodes['yggry'] +                                            "Wario",
         caseDrawCodes['yggry'], caseDrawCodes['yggry'],
-        colors['line'], caseDrawCodes['yygy'] +                             "(R U R' U') F' U2 F (U R U R')",
+        colors['line'], caseDrawCodes['yygy'] +                             "R U2 r D r' U2 r D' r' R'",
         caseDrawCodes['yygy'], caseDrawCodes['yygy'] +                      "",
-        caseDrawCodes['yygy'], colors['line'], caseDrawCodes['gyy'] +       "(R' U' R U') (R' U R U) l U' R' U x",
-        caseDrawCodes['gyy'], caseDrawCodes['gyy'] +                        "Mirror of Mario",
+        caseDrawCodes['yygy'], colors['line'], caseDrawCodes['gyy'] +       "(R U R' U') F' U2 F (U R U R')",
+        caseDrawCodes['gyy'], caseDrawCodes['gyy'] +                        "",
         caseDrawCodes['yyy'], colors['line'], colors['w'], '\n']
     ],
 
