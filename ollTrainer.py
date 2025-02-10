@@ -63,7 +63,7 @@ from random import choice, sample
 def main():
     # help message
     if len(argv) == 2:
-        if argv[1] == 'help':
+        if argv[1] == 'h' or argv[1] == 'help':
             print(hlp)
             exit()
 
