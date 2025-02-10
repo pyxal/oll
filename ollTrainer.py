@@ -4,7 +4,7 @@ hlp = """
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                   #
 #   CFOP-OLL Trainer V3.0                             Last change:  #
-#   Made by Pyxal                                       21.03.2023  #
+#   Made by Pyxal                                       10.03.2025  #
 #                                                                   #
 #   Recap: train cases one after another without reoccurrence       #
 #   Training: train cases with random occurrence                    #
