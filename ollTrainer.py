@@ -320,7 +320,7 @@ ollCases = [
         caseDrawCodes['ygygy'], caseDrawCodes['ygygy'] +                    "F (Sexy) S (Sexy) f'",
         caseDrawCodes['ygygy'], colors['line'], caseDrawCodes['yggg'] +     "y (r U r') U2 R U2' R' U2 (r U' r')",
         caseDrawCodes['yggg'], caseDrawCodes['yggg'] +                      "",
-        caseDrawCodes['ygyy'], colors['line'], colors['w'], '\n']
+        caseDrawCodes['ygyy'], colors['line'], colors['w'], '\n'] +         "y' R U' R2' D' r U r' D R2 U R'"
     ],
 
     # 3
