@@ -1066,7 +1066,7 @@ ollCases = [
 
     # 56
     [
-        "alg1",
+        "r U r' (U R U' R') (U R U' R') r U' r'",
         ['\n', colors['line'],
         caseDrawCodes['ygygy'] +                                            "OLL 56",
         caseDrawCodes['ygggy'] +                                            "Streetlights",
