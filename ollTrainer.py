@@ -42,7 +42,7 @@ hlp = """
 #   While training, the following inputs can be used:               #
 #                                                                   #
 #      a, alg              show alg                                 #
-#      c, case             show case (windows only in cygwin)       #
+#      c, case             show case                                #
 #      h, help             show this help message                   #
 #      e, exit             exit                                     #
 #                                                                   #
