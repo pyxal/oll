@@ -34,7 +34,7 @@ hlp = """
 #      Train               switch to training mode                  #
 #                          with all cases                           #
 #                                                                   #
-#      Gallery             show case gallery (windows with cygwin)  #
+#      Gallery             show case gallery                        #
 #                          combineable with other args              #
 #                          to show corresponding cases              #
 #                                                                   #
@@ -56,8 +56,8 @@ hlp = """
 
 # imports
 from sys import argv
-from platform import machine
 from random import choice, sample
+import just_fix_windows_console
 
 
 def main():
@@ -242,10 +242,9 @@ class caseDraw:
 
     # case generator
     def drawOllCase(colorPattern):
-        if machine() != 'AMD64':
-            for line in colorPattern:
-                print(line)
-        else: print("No casedrawing support for windows. F*** Windows!")
+        for line in colorPattern:
+            print(line)
+
 
     # case pattern translator
     def translate(tile1, tile2, tile3):
