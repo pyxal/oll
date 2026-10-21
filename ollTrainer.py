@@ -3,8 +3,8 @@
 hlp = """
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                   #
-#   CFOP-OLL Trainer V3.0                             Last change:  #
-#   Made by Pyxal                                       10.03.2025  #
+#   CFOP-OLL Trainer V3.1                             Last change:  #
+#   Made by Pyxal                                       21.10.2026  #
 #                                                                   #
 #   Recap: train cases one after another without reoccurrence       #
 #   Training: train cases with random occurrence                    #
@@ -55,9 +55,15 @@ hlp = """
 """
 
 # imports
+from os import system as cmd
 from sys import argv
 from random import choice, sample
-import just_fix_windows_console
+
+try:
+    import just_fix_windows_console
+except ModuleNotFoundError:
+    cmd('pip install just_fix_windows_console')
+    import just_fix_windows_console
 
 
 def main():
