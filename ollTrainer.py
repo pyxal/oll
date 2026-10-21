@@ -62,7 +62,7 @@ from random import choice, sample
 try:
     import just_fix_windows_console
 except ModuleNotFoundError:
-    cmd('pip install just_fix_windows_console')
+    cmd('pip install -q just_fix_windows_console')
     import just_fix_windows_console
 
 
